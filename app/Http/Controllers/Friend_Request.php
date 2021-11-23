@@ -203,8 +203,9 @@ class Friend_Request extends Controller
 
             $delete_request = $Friend_request->findOne(['reciver_id' => $str_decode, 'sender_id' => $id]);
 
+            // dd($delete_request);
             if (isset($delete_request)) {
-                $Friend_request->deleteOne(['_id' => new \MongoDB\BSON\ObjectID($id)]);
+                $Friend_request->deleteOne(['sender_id' => $id]);
                 // $delete_request->delete($id);
                 return response([
                     'Status' => '200',
