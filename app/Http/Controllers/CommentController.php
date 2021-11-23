@@ -169,4 +169,25 @@ class CommentController extends Controller
         catch (Throwable $e) {
             return $e->getMessage();
         }
+    }
+
+    public function friend_posts($id){
+        //  //DB Connection
+        // $posts_collection = (new MongoDB())->MongoApp->posts;
+
+        // $f_posts = $posts_collection->findOne(['user_id' => $id , 'status' => 'public']);
+        // // dd($f_posts);
+
+        // if (empty($f_posts)) {
+        //     return response([
+        //         'This User Have No Post'
+        //     ]);
+        // }
+
+        // if (isset($f_posts)) {
+        //     return response([
+        //         $f_posts
+        //     ]);
+        // }   
+    }
 }

@@ -18,8 +18,13 @@ use App\Http\Controllers\Friend_Request;
 |
 */
 
-// //User Routes with middleware
-// Route::middleware(['token'])->group(function () {
+Route::middleware(['token'])->group(function () {
 
-// });
+    //Send Friend Request Routes
+    Route::post('/send_Request', [Friend_Request::class, 'Send_Friend_Request']);
+    Route::post('/my_requests', [Friend_Request::class, 'My_Requests']);
+    Route::post('/receive_request', [Friend_Request::class, 'Accept_Request']);
+    Route::post('delete_request/{id}', [Friend_Request::class, 'Delete_Request']);
+
+});
 

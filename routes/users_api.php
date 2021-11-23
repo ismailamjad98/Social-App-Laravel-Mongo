@@ -18,8 +18,16 @@ use App\Http\Controllers\Friend_Request;
 |
 */
 
-// //User Routes with middleware
-// Route::middleware(['token'])->group(function () {
+//User Routes
+Route::post('/register', [UserController::class , 'register']);
+Route::post('/login', [UserController::class , 'login']);
+Route::get('emailVerify/{token}/{email}', [UserController::class , 'EmailVerify']);
 
-// });
+//User Routes with middleware
+Route::middleware(['token'])->group(function () {
+    Route::post('/logout', [UserController::class , 'Logout']);
+    Route::get('/profile', [UserController::class , 'profile']); 
+    Route::post('/profile/update/{id}', [UserController::class , 'update']);
+    // Route::post('/profile/delete/{id}', [UserController::class , 'destroy_User']);
+});
 

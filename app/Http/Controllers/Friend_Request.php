@@ -181,7 +181,6 @@ class Friend_Request extends Controller
         $decoded = json_decode($encode, true);
         $str_decode = $decoded['$oid'];
 
-        // $delete_request = ModelsFriend_Request::all()->where('reciver_id', $userID)->where('sender_id', $id)->first();
         $delete_request = $Friend_request->findOne(['reciver_id'=> $str_decode , 'sender_id'=> $id]);
 
         if (isset($delete_request)) {

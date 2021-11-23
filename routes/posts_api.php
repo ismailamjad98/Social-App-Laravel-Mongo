@@ -18,8 +18,14 @@ use App\Http\Controllers\Friend_Request;
 |
 */
 
-// //User Routes with middleware
-// Route::middleware(['token'])->group(function () {
+Route::middleware(['token'])->group(function () {
 
-// });
+    //POST Routes
+    Route::post('/post', [PostController::class , 'create']);
+    Route::post('post/update/{id}', [PostController::class , 'update']);
+    Route::get('post/myposts', [PostController::class , 'myposts']); 
+    Route::get('post/allposts', [PostController::class , 'allposts']);
+    Route::post('post/delete/{id}', [PostController::class , 'destroy']);
+
+});
 
