@@ -93,8 +93,6 @@ class PostController extends Controller
 
     public function allposts(Request $request)
     {
-
-        // $myposts = Post::all();
         //DB Collection
         $collection = (new MongoDB())->MongoApp->posts;
         $allposts = $collection->find();
