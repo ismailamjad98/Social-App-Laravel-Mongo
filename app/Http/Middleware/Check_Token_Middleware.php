@@ -32,13 +32,8 @@ class Check_Token_Middleware
 
         $userID = $decoded->id;
         
-        // if token is invalid
+        // if Token Doesnot Exists
         $collection = (new MongoDB())->MongoApp->users;  
-        
-        // // dd($userID);
-        // $encode = json_encode($userID);
-        // $decoded =json_decode($encode,true);
-        // $str_decode = $decoded['$oid'];
         
         $check = $collection->findOne(['token' => $getToken]);
 

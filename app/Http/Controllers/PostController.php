@@ -23,7 +23,6 @@ class PostController extends Controller
                 [
                     'title' => 'required',
                     'body' => 'required',
-                    'image' => 'required',
                     'status' => 'required',
                 ]
             );
@@ -128,16 +127,20 @@ class PostController extends Controller
             //than find the posts of user_id and get the specific user
             $updatepost = $collection->findOne(['user_id' => $str_decode]);
 
+            $update_single_field = [];
+
+            foreach ($request->all() as $key => $value) {
+
+                if (in_array($key, ['title', 'body', 'image', 'status'])) {
+
+                    $update_single_field[$key] = $value;
+                }
+            }
+
             if (isset($updatepost)) {
                 $updatepost = $collection->updateOne(
                     ['_id' => new \MongoDB\BSON\ObjectID($id)],
-                    ['$set' => [
-                        // Attachments_folder is created in Storage/app/ 
-                        'image' => $request->file('image')->store('Attachments_Folder'),
-                        'title' => $request->title,
-                        'body' => $request->body,
-                        'status' => $request->status
-                    ]]
+                    ['$set' => $update_single_field]
                 );
                 //message on Successfully
                 return response([

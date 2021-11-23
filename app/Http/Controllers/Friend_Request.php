@@ -141,7 +141,7 @@ class Friend_Request extends Controller
                 ]);
             }
 
-            $requestCollection = (new MongoDB())->social_app->requests;
+            $requestCollection = (new MongoDB())->MongoApp->requests;
             $recive_req =  $requestCollection->findOne(
                 [
                     'sender_id' => $request->sender_id,

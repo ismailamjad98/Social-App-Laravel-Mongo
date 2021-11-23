@@ -215,7 +215,7 @@ class UserController extends Controller
 
             $user = $collection->findOne(['_id' => new \MongoDB\BSON\ObjectID($str_decode)]);
 
-            if ($collection->findOne(['token' == null])) {
+            if ($collection->findOne(['token' => null])) {
 
                 return response([
                     "message" => "This user is already logged out"
@@ -224,7 +224,7 @@ class UserController extends Controller
 
             $userExist = $collection->updateOne(
                 ['_id' => $user['_id']],
-                ['$set' => ['token' => ['token' => null]]]
+                ['$set' => ['token' => null]]
             );
 
             return response([
@@ -293,14 +293,31 @@ class UserController extends Controller
 
             $userupdate = $collection->findOne(['_id' => new \MongoDB\BSON\ObjectID($id)]);
 
+            $update_single_field = [];
+
+            foreach ($request->all() as $key => $value) {
+                if (in_array($key, ['name','password'])) {
+                    $update_single_field[$key] = $value;
+                }
+            }
+            
+            if(isset($update_single_field['password']) == null){
+                return response([
+                    'message' => 'Password is required to Update',
+                ], 400);
+            }
+
+            if($request->password != null){
+                $update_single_field['password'] = Hash::make($request->password);
+            }
+
             //message on Successfully
             if (isset($userupdate)) {
 
-                $userExist = $collection->updateOne(
+                $collection->updateOne(
                     ['_id' => new \MongoDB\BSON\ObjectID($str_decode)],
-                    ['$set' => ['name' => $request->name, 'password' => Hash::make($request->password)]]
+                    ['$set' => $update_single_field ]
                 );
-
                 return response([
                     'Status' => '200',
                     'message' => 'you have successfully Update User Profile',
