@@ -23,7 +23,7 @@ class Friend_Request extends Controller
 
             //DB Connection
             $collection = (new MongoDB())->MongoApp->users;
-            $Friend_request = (new MongoDB())->MongoApp->requests;
+            $Friend_request = (new MongoDB())->MongoApp->friend_requests;
 
             $request->validate(
                 [
@@ -91,14 +91,14 @@ class Friend_Request extends Controller
             $str_decode = $decoded['$oid'];
 
             //DB Connection
-            $Friend_request = (new MongoDB())->MongoApp->requests;
+            $Friend_request = (new MongoDB())->MongoApp->friend_requests;
 
             $req = $Friend_request->findOne([
-                'reciever_id' => $str_decode,
+                'reciver_id' => $str_decode,
                 'status' => 0
             ]);
 
-            if (json_decode($req) != null) {
+            if ($req != null) {
                 return response([
                     $req,
                 ]);
@@ -123,7 +123,7 @@ class Friend_Request extends Controller
             );
 
             //DB Connection
-            $Friend_request = (new MongoDB())->MongoApp->requests;
+            $Friend_request = (new MongoDB())->MongoApp->friend_requests;
 
             //get token from header and check user id
             $getToken = $request->bearerToken();
@@ -141,13 +141,15 @@ class Friend_Request extends Controller
                 ]);
             }
 
-            $requestCollection = (new MongoDB())->MongoApp->requests;
+            $requestCollection = (new MongoDB())->MongoApp->friend_requests;
             $recive_req =  $requestCollection->findOne(
                 [
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $str_decode,
                 ]
             );
+
+            // dd($recive_req);
 
             //check if recever_user is exists in Request Table DB
 
@@ -165,13 +167,17 @@ class Friend_Request extends Controller
 
             if (isset($recive_req)) {
                 $update_status = $requestCollection->updateOne(
-                    ['_id' => new \MongoDB\BSON\ObjectID($str_decode)],
+                    ['reciver_id' => $str_decode],
                     ['$set' => [
                         'status' => 1
                     ]]
                 );
                 return response([
                     "Message" => "Congratulations! You are Friends Now"
+                ]);
+            }else{
+                return response([
+                    "Message" => "Something Went Wrong"
                 ]);
             }
         } catch (Throwable $e) {
@@ -183,7 +189,7 @@ class Friend_Request extends Controller
     {
         try {
             //DB Connection
-            $Friend_request = (new MongoDB())->MongoApp->requests;
+            $Friend_request = (new MongoDB())->MongoApp->friend_requests;
 
             //get token from header and check user id
             $getToken = $request->bearerToken();

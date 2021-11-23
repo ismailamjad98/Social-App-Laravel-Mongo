@@ -69,11 +69,9 @@ class PostController extends Controller
             //DB Collection
             $collection = (new MongoDB())->MongoApp->posts;
             $myposts = $collection->find(['user_id' => $str_decode]);
+            $get_posts = $myposts->toArray();
 
-
-            // $myposts = Post::all()->where('user_id',  $userID);
-
-            if ($myposts == null) {
+            if ($get_posts == null) {
 
                 return response([
                     'Status' => '200',
@@ -82,7 +80,7 @@ class PostController extends Controller
             } else {
                 return response([
                     'Status' => '200',
-                    'Data' => $myposts->toArray(),
+                    'Data' => $get_posts,
                 ], 200);
             }
         } catch (Throwable $e) {
