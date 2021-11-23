@@ -100,7 +100,7 @@ class Friend_Request extends Controller
 
             if (json_decode($req) != null) {
                 return response([
-                    "All Requests" => $req,
+                    $req,
                 ]);
             } else {
                 return response([
