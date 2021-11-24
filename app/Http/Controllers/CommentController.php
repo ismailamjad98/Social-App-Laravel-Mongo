@@ -81,106 +81,106 @@ class CommentController extends Controller
     public function update(Request $request, $p_id, $c_id)
     {
         try {
-        //get token from header and check user id
-        $getToken = $request->bearerToken();
-        $decoded = JWT::decode($getToken, new Key("SocialCamp", "HS256"));
-        $userID = $decoded->id;
-
-        //DB Connection
-        $post_collection = (new MongoDB())->MongoApp->posts;
-
-        //to change token into string from array
-        $encode = json_encode($userID);
-        $decoded = json_decode($encode, true);
-        $str_decode = $decoded['$oid'];
-
-        $get_post = $post_collection->findOne(['user_id' => $str_decode, '_id' => new \MongoDB\BSON\ObjectID($p_id)]);
-
-        $comment_exists = $post_collection->findOne([
-            '_id' => new \MongoDB\BSON\ObjectID($p_id), 
-            'comments.id' => (integer)$c_id
-        ]);
-
-        // dd($not_exists);
-        if ($comment_exists == null) {
-            return response([
-                'message' => 'Comment Not Exits',
-            ]);
-        }
-
-
-        $image = null;
-
-        if ($request->file('image') != null) {
-            $image = $request->file('image')->store('post_Attachments');
-        }
-
-
-        if (isset($get_post)) {
-            if($request->comment != null){
-                $post_collection->updateOne(
-                    ['comments.id' => (integer)$c_id],
-                    ['$set' => ['comments.$.comment' => $request->comment]]
-                );
-            }
-
-            if($request->comment != null){
-                $post_collection->updateOne(
-                    ['comments.id' => (integer)$c_id],
-                    ['$set' => ['comments.$.image' => $image]]
-                );
-            }
-
-            //message on Successfully
-            return response([
-                'Status' => '200',
-                'message' => 'you have successfully Update Comment',
-            ], 200);
-        } else {
-            //message on Unauthorize
-            return response([
-                'Status' => '200',
-                'message' => 'you are not Authorize to Update this Comment',
-            ], 200);
-        }
-        } catch (Throwable $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function delete(Request $request, $p_id , $c_id)
-    {
-        try {
+            //get token from header and check user id
             $getToken = $request->bearerToken();
             $decoded = JWT::decode($getToken, new Key("SocialCamp", "HS256"));
             $userID = $decoded->id;
 
             //DB Connection
-            $post_collection = (new MongoDB())->MongoApp->comments;
+            $post_collection = (new MongoDB())->MongoApp->posts;
 
             //to change token into string from array
             $encode = json_encode($userID);
             $decoded = json_decode($encode, true);
             $str_decode = $decoded['$oid'];
 
-            //than find the posts of user_id and get the specific user
-            // $not_exists = $post_collection->find(['_id' =>  new \MongoDB\BSON\ObjectID($id)]);
-            $comment_exists = $post_collection->findOne([
-                '_id' => new \MongoDB\BSON\ObjectID($p_id), 
-                'comments.id' => (integer)$c_id
-            ]);
-            
-            //first compare user_id to the db user id 
-            // $comment = $collection->findOne(['user_id' => $str_decode]);
             $get_post = $post_collection->findOne(['user_id' => $str_decode, '_id' => new \MongoDB\BSON\ObjectID($p_id)]);
+
+            $comment_exists = $post_collection->findOne([
+                '_id' => new \MongoDB\BSON\ObjectID($p_id),
+                'comments.id' => (int)$c_id
+            ]);
+            //check if comment is not match to db
             if ($comment_exists == null) {
                 return response([
                     'message' => 'Comment Not Exits',
                 ]);
             }
 
+            $image = null;
+            if ($request->file('image') != null) {
+                $image = $request->file('image')->store('post_Attachments');
+            }
+
             if (isset($get_post)) {
-                $post_collection->deleteOne(['_id' => new \MongoDB\BSON\ObjectID($p_id)]);
+                if ($request->comment != null) {
+                    $post_collection->updateOne(
+                        ['comments.id' => (int)$c_id],
+                        ['$set' => ['comments.$.comment' => $request->comment]]
+                    );
+                }
+
+                if ($request->comment != null) {
+                    $post_collection->updateOne(
+                        ['comments.id' => (int)$c_id],
+                        ['$set' => ['comments.$.image' => $image]]
+                    );
+                }
+
+                //message on Successfully
+                return response([
+                    'Status' => '200',
+                    'message' => 'you have successfully Update Comment',
+                ], 200);
+            } else {
+                //message on Unauthorize
+                return response([
+                    'Status' => '200',
+                    'message' => 'you are not Authorize to Update this Comment',
+                ], 200);
+            }
+        } catch (Throwable $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function delete(Request $request, $p_id, $c_id)
+    {
+        try {
+            //get token from header and check user id
+            $getToken = $request->bearerToken();
+            $decoded = JWT::decode($getToken, new Key("SocialCamp", "HS256"));
+            $userID = $decoded->id;
+
+            //DB Connection
+            $post_collection = (new MongoDB())->MongoApp->posts;
+
+            //to change token into string from array
+            $encode = json_encode($userID);
+            $decoded = json_decode($encode, true);
+            $str_decode = $decoded['$oid'];
+
+            //check if the post is available in DB or not
+            $get_post = $post_collection->findOne(['user_id' => $str_decode, '_id' => new \MongoDB\BSON\ObjectID($p_id)]);
+
+            $comment_exists = $post_collection->findOne([
+                '_id' => new \MongoDB\BSON\ObjectID($p_id),
+                'comments.id' => (int)$c_id
+            ]);
+            //check if comment is not match to db
+            if ($comment_exists == null) {
+                return response([
+                    'message' => 'Comment Not Exits',
+                ]);
+            }
+
+            //if post is available
+            if (isset($get_post)) {
+                $post_collection->updateOne(
+                    [],
+                    ['$pull' => ['comments' => ['id' => (int)$c_id]]],
+                    ['multi' => true]
+                );
 
                 // $comment->delete();
                 return response([
