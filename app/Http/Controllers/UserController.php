@@ -291,14 +291,10 @@ class UserController extends Controller
                 }
             }
             
-            if(isset($update_single_field['password']) == null){
-                return response([
-                    'message' => 'Password is required to Update',
-                ], 400);
-            }
-
-            if($request->password != null){
-                $update_single_field['password'] = Hash::make($request->password);
+            if(isset($update_single_field['password']) != null){
+                if($request->password != null){
+                    $update_single_field['password'] = Hash::make($request->password);
+                }
             }
 
             //message on Successfully
