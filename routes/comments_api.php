@@ -20,8 +20,8 @@ Route::middleware(['token'])->group(function () {
 
     //Comments Routes
     Route::post('/comment/{id}' , [CommentController::class, 'create']);
-    Route::post('/comment/update/{id}' , [CommentController::class, 'update']);
-    Route::post('/comment/delete/{id}' , [CommentController::class, 'delete']);
+    Route::post('/comment/update/{p_id}/{c_id}' , [CommentController::class, 'update']);
+    Route::post('/comment/delete/{p_id}/{c_id}' , [CommentController::class, 'delete']);
     //comments on friends Post
     Route::post('/friend_post/{id}' , [CommentController::class, 'friend_posts']);
 

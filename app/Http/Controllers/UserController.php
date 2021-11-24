@@ -72,7 +72,6 @@ class UserController extends Controller
                 Mail::to($request->email)->send(new Sendmail($url, 'bevegak100@d3ff.com'));
                 //call a user resource for json message. 
                 return new UsersResource($request);
-
             } else {
                 return response([
                     'Status' => '200',
@@ -286,23 +285,23 @@ class UserController extends Controller
             $update_single_field = [];
 
             foreach ($request->all() as $key => $value) {
-                if (in_array($key, ['name','password'])) {
+                if (in_array($key, ['name', 'password'])) {
                     $update_single_field[$key] = $value;
                 }
             }
-            
-            if(isset($update_single_field['password']) != null){
-                if($request->password != null){
+
+            if (isset($update_single_field['password']) != null) {
+                if ($request->password != null) {
                     $update_single_field['password'] = Hash::make($request->password);
                 }
             }
-            
+
             //message on Successfully
             if (isset($userupdate)) {
 
                 $collection->updateOne(
                     ['_id' => new \MongoDB\BSON\ObjectID($str_decode)],
-                    ['$set' => $update_single_field ]
+                    ['$set' => $update_single_field]
                 );
                 return response([
                     'Status' => '200',

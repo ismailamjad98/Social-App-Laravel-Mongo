@@ -29,11 +29,11 @@ class PostController extends Controller
 
             //get token from header and check user id
             $collection = (new MongoDB())->MongoApp->posts;
-
             $encode = json_encode($userID);
             $decoded = json_decode($encode, true);
             $str_decode = $decoded['$oid'];
 
+            
             //save a new post in db
             $collection->insertOne([
                 'user_id' => $str_decode,
