@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Friend_Request as ModelsFriend_Request;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use MongoDB\Client as MongoDB;
@@ -148,9 +146,6 @@ class Friend_Request extends Controller
                     'reciver_id' => $str_decode,
                 ]
             );
-
-            // dd($recive_req);
-
             //check if recever_user is exists in Request Table DB
 
             if (!$recive_req) {

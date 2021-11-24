@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UsersResource;
 use App\Mail\Sendmail;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
@@ -9,9 +10,6 @@ use Firebase\JWT\Key;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use MongoDB\Client as MongoDB;
-
-// use MongoDB\BSON\ObjectId::__toString;
-use Symfony\Component\Console\Input\Input;
 use Throwable;
 
 class UserController extends Controller
@@ -70,19 +68,11 @@ class UserController extends Controller
                     'email_verified_at' => null,
                 ]);
 
-                //get all requested data in a variable
-                $user = $collection->findOne(['email' => $request->email]);
-
                 //send Email
                 Mail::to($request->email)->send(new Sendmail($url, 'bevegak100@d3ff.com'));
+                //call a user resource for json message. 
+                return new UsersResource($request);
 
-                //message on Register
-                return response([
-                    'Status' => '200',
-                    'message' => 'Thanks, you have successfully signup',
-                    "Mail" => "Email Sended Successfully",
-                    'user' => $user
-                ], 200);
             } else {
                 return response([
                     'Status' => '200',
