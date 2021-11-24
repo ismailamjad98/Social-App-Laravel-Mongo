@@ -263,7 +263,7 @@ class UserController extends Controller
     }
 
     // Update user profile
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         try {
             //get token from header
@@ -281,7 +281,7 @@ class UserController extends Controller
             $decoded = json_decode($encode, true);
             $str_decode = $decoded['$oid'];
 
-            $userupdate = $collection->findOne(['_id' => new \MongoDB\BSON\ObjectID($id)]);
+            $userupdate = $collection->findOne(['_id' => new \MongoDB\BSON\ObjectID($str_decode)]);
 
             $update_single_field = [];
 
@@ -296,7 +296,7 @@ class UserController extends Controller
                     $update_single_field['password'] = Hash::make($request->password);
                 }
             }
-
+            
             //message on Successfully
             if (isset($userupdate)) {
 

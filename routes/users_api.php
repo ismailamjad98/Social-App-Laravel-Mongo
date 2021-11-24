@@ -27,7 +27,7 @@ Route::get('emailVerify/{token}/{email}', [UserController::class , 'EmailVerify'
 Route::middleware(['token'])->group(function () {
     Route::post('/logout', [UserController::class , 'Logout']);
     Route::get('/profile', [UserController::class , 'profile']); 
-    Route::post('/profile/update/{id}', [UserController::class , 'update']);
+    Route::post('/profile/update/', [UserController::class , 'update']);
     // Route::post('/profile/delete/{id}', [UserController::class , 'destroy_User']);
 });
 

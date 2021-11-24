@@ -23,29 +23,25 @@ class Check_Token_Middleware
     {
         $getToken = $request->bearerToken();
         //if token is Empty
-        if(empty($getToken)){
+        if (empty($getToken)) {
             return response([
-            "message" => "Token is Empty Please Enter Berear Token!"
+                "message" => "Token is Empty Please Enter Berear Token!"
             ], 200);
         }
         $decoded = JWT::decode($getToken, new Key("SocialCamp", "HS256"));
 
         $userID = $decoded->id;
-        
+
         // if Token Doesnot Exists
-        $collection = (new MongoDB())->MongoApp->users;  
-        
+        $collection = (new MongoDB())->MongoApp->users;
+
         $check = $collection->findOne(['token' => $getToken]);
 
-        // dd($check);
-        // $check = Token::where('token' , $getToken)->first();
-        
-        if(!isset($check)){
+        if (!isset($check)) {
             return response([
-            "message" => "Token Doesnot Exists"
+                "message" => "Token Doesnot Exists"
             ], 200);
-        }
-        else{
+        } else {
             return $next($request);
         }
     }
