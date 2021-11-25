@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\PostRequest;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
@@ -12,20 +12,14 @@ use Throwable;
 class PostController extends Controller
 {
 
-    public function create(Request $request)
+    public function create(PostRequest $request)
     {
         try {
             $getToken = $request->bearerToken();
             $decoded = JWT::decode($getToken, new Key("SocialCamp", "HS256"));
             $userID = $decoded->id;
 
-            $request->validate(
-                [
-                    'title' => 'required',
-                    'body' => 'required',
-                    'status' => 'required',
-                ]
-            );
+            $request->validated();
 
             //get token from header and check user id
             $collection = (new MongoDB())->MongoApp->posts;

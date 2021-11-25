@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Resources\UsersResource;
 use App\Mail\Sendmail;
 use Illuminate\Http\Request;
@@ -36,21 +38,15 @@ class UserController extends Controller
         return $token;
     }
 
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
         try {
             //DB Connection
             $collection = (new MongoDB())->MongoApp->users;
 
             // Validate the user inputs
-            $request->validate(
-                [
-                    'name' => 'required|string|min:3',
-                    'email' => 'required|string|email',
-                    'password' => 'required|string|min:5'
-                ]
-            );
-
+            $request->validated();
+            
             //check user already exists or not
             $user_exits = $collection->findOne(['email' => $request->email]);
 
@@ -133,13 +129,10 @@ class UserController extends Controller
     }
 
     // Login Method
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
         try {
-            $request->validate([
-                'email' => 'required|string',
-                'password' => 'required|string'
-            ]);
+            $request->validated();
 
             //DB Connection
             $collection = (new MongoDB())->MongoApp->users;

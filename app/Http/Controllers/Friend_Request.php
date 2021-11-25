@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AcceptRequest;
+use App\Http\Requests\FriendRequest;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -11,7 +13,7 @@ use Throwable;
 class Friend_Request extends Controller
 {
     //
-    public function Send_Friend_Request(Request $request)
+    public function Send_Friend_Request(FriendRequest $request)
     {
         try {
             //get token from header and check user id
@@ -23,11 +25,7 @@ class Friend_Request extends Controller
             $collection = (new MongoDB())->MongoApp->users;
             $Friend_request = (new MongoDB())->MongoApp->friend_requests;
 
-            $request->validate(
-                [
-                    'reciver_id' => 'required'
-                ]
-            );
+            $request->validated();
 
             //to change token into string from array
             $encode = json_encode($userID);
@@ -110,15 +108,11 @@ class Friend_Request extends Controller
         }
     }
 
-    public function Accept_Request(Request $request)
+    public function Accept_Request(AcceptRequest $request)
     {
         try {
 
-            $request->validate(
-                [
-                    'sender_id' => 'required'
-                ]
-            );
+            $request->validated();
 
             //DB Connection
             $Friend_request = (new MongoDB())->MongoApp->friend_requests;

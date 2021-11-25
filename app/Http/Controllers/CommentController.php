@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentRequest;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
@@ -10,11 +11,9 @@ use Throwable;
 
 class CommentController extends Controller
 {
-    public function create(Request $request, $id)
+    public function create( CommentRequest $request, $id)
     {
-        $request->validate([
-            'comment' => 'required'
-        ]);
+        $request->validated();
 
         try {
             $getToken = $request->bearerToken();
@@ -78,7 +77,7 @@ class CommentController extends Controller
     }
 
 
-    public function update(Request $request, $p_id, $c_id)
+    public function update(CommentRequest $request, $p_id, $c_id)
     {
         try {
             //get token from header and check user id
@@ -144,7 +143,7 @@ class CommentController extends Controller
         }
     }
 
-    public function delete(Request $request, $p_id, $c_id)
+    public function delete(CommentRequest $request, $p_id, $c_id)
     {
         try {
             //get token from header and check user id
